@@ -1,7 +1,7 @@
-import netboxApi as nbApi
+import Netbox.netboxApi as nbApi
 from pykeepass import PyKeePass
 
-secrets = PyKeePass("../Secrets/secrets.kdbx", keyfile="../Secrets/secrets.keyx")
+secrets = PyKeePass("Secrets/secrets.kdbx", keyfile="Secrets/secrets.keyx")
 
 def getDnsNames(nb, cidr):
     results = nb.getIpAddresses({
@@ -18,8 +18,9 @@ def main():
         token = secrets.find_entries(path=["Netbox", "API Key"]).password,
         url = secrets.find_entries(path=["Netbox", "URL"]).password
     )
-
-    getDnsNames(nb, "w.x.y.z/ab") # Update your CIDR value here.
+    
+    # Write your executing code in here.
+    
 
 if __name__ == "__main__":
     main()

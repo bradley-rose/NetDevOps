@@ -24,5 +24,5 @@ mkdir venv
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install --upgrade pip wheel
-python -m pip install appName/requirements.txt
+python -m pip install -r appName/requirements.txt
 ```
