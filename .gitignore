@@ -1,0 +1,3 @@
+*.keyx
+venv
+__pycache__
