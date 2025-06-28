@@ -7,7 +7,7 @@ class OPNsense:
         try:
             self.username = kwargs.pop("key")
             self.password = kwargs.pop("secret")
-            self.urlBase = "https://" + kwargs.pop("url") + "/api/"
+            self.urlBase = kwargs.pop("url") + "/api/"
         except KeyError as e:
             raise TypeError(f"Missing required argument: '{e.args[0]}'")
 
@@ -31,9 +31,60 @@ class OPNsense:
         try:
             response = requests.get(fullUrl, auth=HTTPBasicAuth(self.username, self.password), params=params)
             response.raise_for_status()
-            return response.json()["results"]
+            return response.json()
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"GET request failed: {e}")
 
-    def getFirewallAlias(self):
+    def post(self, *, uri: str, body: dict = None):
+        if not body:
+            body = {}
+        
+        fullUrl = self.urlBase + uri.lstrip("/")
+        try:
+            response = requests.post(fullUrl, auth=HTTPBasicAuth(self.username, self.password), json=body)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            raise RuntimeError(f"GET request failed: {e}")
+
+    def getFirewallAliases(self):
         return self.get(uri = "firewall/alias/get")
+
+    def getUnboundHostOverrides(self):
+        return self.get(uri = "unbound/settings/search_host_override")
+
+    def updateUnboundHostOverride(self, override):
+        uri = "unbound/settings/set_host_override/" + override["uuid"]
+        del override["rr"]
+        return self.post(uri = uri, body = {"host":override})
+
+    def createUnboundHostOverride(self, override):
+        try:
+            hostname = override.pop("hostname")
+            server = override.pop("server")
+            recordType = override.pop("type")
+            description = override.pop("description")
+            domain = override.pop("domain")
+
+            if recordType not in ["A", "AAAA"]:
+                raise ValueError("Value 'type' must be equal to 'A' or 'AAAA'.")
+
+        except KeyError as e:
+            raise TypeError(f"Missing required argument: '{e.args[0]}'")
+
+        newOverride = {
+            "hostname": hostname,
+            "server": server,
+            "rr": recordType,
+            "domain": domain,
+            "description": description,
+            "enabled": 1
+        }
+
+        return self.post(uri = "unbound/settings/add_host_override", body = {"host":newOverride})
+
+    def deleteUnboundHostOverride(self, override):
+        return self.post(uri = "unbound/settings/del_host_override/" + override["uuid"])
+
+    def applyUnboundChanges(self):
+        return self.post(uri = "unbound/service/reconfigure")

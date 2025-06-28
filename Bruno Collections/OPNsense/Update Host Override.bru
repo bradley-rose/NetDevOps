@@ -1,0 +1,26 @@
+meta {
+  name: Update Host Override
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://gateway.{{domain}}.{{tld}}/api/unbound/settings/set_host_override/539946f7-80c7-452a-9325-36aa8d4a2e10
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "host": {
+      "enabled": "1",
+      "hostname": "testHostname",
+      "domain": "testDomain.tld",
+      "mxprio": "",
+      "mx": "",
+      "ttl": "",
+      "server": "1.1.1.1",
+      "description": "API updated record"
+    }
+  }
+}

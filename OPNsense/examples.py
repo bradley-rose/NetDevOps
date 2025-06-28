@@ -8,4 +8,5 @@ opnsense = opnApi.OPNsense(
     url=secrets.find_entries(path=["OPNsense", "URL"]).password
 )
 
-print(opnsense.getFirewallAlias())
+#print(opnsense.getFirewallAliases())
+print(opnsense.getUnboundHostOverrides())

@@ -1,0 +1,11 @@
+meta {
+  name: Apply Unbound
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://gateway.{{domain}}.{{tld}}/api/unbound/service/reconfigure
+  body: none
+  auth: inherit
+}

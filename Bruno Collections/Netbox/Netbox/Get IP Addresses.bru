@@ -1,0 +1,11 @@
+meta {
+  name: Get IP Addresses
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://netbox.{{domain}}.{{tld}}/api/ipam/ip-addresses
+  body: none
+  auth: inherit
+}
