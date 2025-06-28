@@ -1,0 +1,24 @@
+meta {
+  name: Add Host Override
+  type: http
+  seq: 6
+}
+
+post {
+  url: https://gateway.{{domain}}.{{tld}}/api/unbound/settings/add_host_override
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "host": {
+      "enabled": "1",
+      "hostname": "test",
+      "domain": "testDomain.tld",
+      "server": "2001:db8::1",
+      "description": "Test New Override",
+      "rr": "AAAA"
+    }
+  }
+}

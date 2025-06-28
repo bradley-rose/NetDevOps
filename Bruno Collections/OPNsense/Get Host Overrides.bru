@@ -1,0 +1,11 @@
+meta {
+  name: Get Host Overrides
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://gateway.{{domain}}.{{tld}}/api/unbound/settings/search_host_override
+  body: none
+  auth: inherit
+}

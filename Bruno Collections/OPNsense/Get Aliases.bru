@@ -1,0 +1,11 @@
+meta {
+  name: Get Aliases
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://gateway.{{domain}}.{{tld}}/api/firewall/alias/get
+  body: none
+  auth: inherit
+}
