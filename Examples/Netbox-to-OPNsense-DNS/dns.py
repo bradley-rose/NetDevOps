@@ -1,8 +1,14 @@
-import Netbox.netboxApi as nbApi
-import OPNsense.opnsenseApi as opnApi
+
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from Netbox import netboxApi as nbApi
+from OPNsense import opnsenseApi as opnApi
 from pykeepass import PyKeePass
 
-secrets = PyKeePass("Secrets/secrets.kdbx", keyfile="Secrets/secrets.keyx")
+secrets = PyKeePass("../../Secrets/secrets.kdbx", keyfile="../../Secrets/secrets.keyx")
 
 nb = nbApi.Netbox(
     token = secrets.find_entries(path=["Netbox", "API Key"]).password,
@@ -54,7 +60,7 @@ def main():
             override = {
                 "hostname": nbAddress["dns_name"],
                 "description": nbAddress["description"],
-                "domain": "bradleyrose.local",
+                "domain": secrets.find_entries(path=["Domain"]).password,
                 "server": nbAddress["address"].split("/")[0]
             }
             if nbAddress["family"]["label"] == "IPv4":
@@ -72,10 +78,12 @@ def main():
     
     # Evaluate all staged changes
     print("Change Summary")
-    print("\tCreations: " + str(len(overrideChanges["create"])))
-    print("\tUpdates: " + str(len(overrideChanges["update"])))
-    print("\tDeletions: " + str(len(overrideChanges["delete"])))
-    print("\tNo action: " + str(len(overrideChanges["none"])))
+    for action in [{"name": "Creations", "slug":"create"}, {"name": "Updates", "slug": "update"}, {"name": "Deletions", "slug": "delete"}, {"name": "No action", "slug": "none"}]:
+        print("\t" + action["name"] + ": " + str(len(overrideChanges[action["slug"]])))
+        if action["slug"] == "none":
+            continue
+        for item in overrideChanges[action["slug"]]:
+            print("\t\t---\n\t\tHostname: " + item["hostname"] + "\n\t\tIP Address: " + item["server"] + "\n\t\tDescription: " + item["description"])
 
     for override in overrideChanges["create"]:
         print(opnsense.createUnboundHostOverride(override))
