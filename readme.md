@@ -12,17 +12,38 @@ I have toyed around with Netbox in a number of environments, but I have never be
 **Of note**: The common route here would be to use Ansible, but because I already am fluent enough with Python, Ansible feels too restrictive for my liking, so I preferred to write this code instead to be able to define the flexible logic required for various purposes. I can schedule the execution of code with Cron and/or webhooks just as easily as anything else, so here we are.
 
 # Usage Instructions
-1. Clone this repository to your local machine
-2. Create a Python virtual environment in the parent directory.
-3. Install all of the requirements for the relevant applications you intend to use. This is modular such that you don't need to install all requirements for every application listed here.
-4. Write your Python code for your desired actions.
+Look at the [Examples](./Examples/) subdirectory for functioning examples.
 
+1. Clone this repository to your local machine
+2. Create a directory in the [Examples](./Examples/) subdirectory. Alternatively, use the examples that are already created.
+3. Create a virtual environment in that directory. `mkdir venv && python3 -m venv venv`
+4. Install the necessary requirements. Either manually do this with the `requirements.txt` file included in each application directory, or install the requirements from the `requirements.txt` file provided within the pre-generated example.
+   1. [Netbox](./Netbox/requirements.txt)
+   2. [OPNsense](./OPNsense/requirements.txt)
+   3. [DNS Example](./Examples/Netbox-to-OPNsense-DNS/requirements.txt)
+5. Write your Python code for your desired actions, or run the provided example file.
+
+## Writing your own
 ```sh
 git clone https://github.com/bradley-rose/NetDevOps.git
 cd NetDevOps
+mkdir Examples/customName
+mkdir Examples/customName/venv
+python3 -m venv Examples/customName/venv
+source Examples/customName/venv/bin/activate
+python -m pip install --upgrade pip wheel
+python -m pip install -r appName/requirements.txt
+```
+
+## Using an existing example
+```sh
+git clone https://github.com/bradley-rose/NetDevOps.git
+cd NetDevOps
+cd Examples/dirName
 mkdir venv
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install --upgrade pip wheel
-python -m pip install -r appName/requirements.txt
+python -m pip install -r requirements.txt
+python ./targetPythonFile.py
 ```
