@@ -1,0 +1,39 @@
+meta {
+  name: Login
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://{{subdomain}}.{{domain}}.{{tld}}/openapi/authorize/token?grant_type=client_credentials
+  body: json
+  auth: inherit
+}
+
+params:query {
+  grant_type: client_credentials
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "omadacId": "{{omadacId}}",
+    "client_id": "{{clientId}}",
+    "client_secret": "{{clientSecret}}"
+  }
+}
+
+script:post-response {
+  const data = res.body;
+  
+  if (data?.result?.accessToken) {
+    bru.setEnvVar("token", data.result.accessToken);
+  }
+  
+  if (data?.result?.refreshToken) {
+    bru.setEnvVar("refreshToken", data.result.refreshToken);
+  }
+}

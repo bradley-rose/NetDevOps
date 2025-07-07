@@ -1,0 +1,22 @@
+meta {
+  name: SSID Settings
+  type: http
+  seq: 7
+}
+
+get {
+  url: https://{{subdomain}}.{{domain}}.{{tld}}/openapi/v1/{{omadacId}}/sites/{{siteId}}/wireless-network/wlans/{{wlanGroup}}/ssids/{{ssidId}}
+  body: none
+  auth: inherit
+}
+
+script:post-response {
+  const siteData = res.body?.result?.data;
+  
+  if (Array.isArray(siteData) && siteData.length > 0 && siteData[0].siteId) {
+    bru.setEnvVar("siteId", siteData[0].siteId);
+    console.log("✅ siteId stored:", siteData[0].siteId);
+  } else {
+    console.warn("⚠ No siteId found in response");
+  }
+}

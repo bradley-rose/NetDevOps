@@ -1,0 +1,20 @@
+meta {
+  name: API Info
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://{{subdomain}}.{{domain}}.{{tld}}/api/info
+  body: none
+  auth: inherit
+}
+
+script:post-response {
+  const data = res.body;
+  
+  if (data?.result?.omadacId) {
+    bru.setEnvVar("omadacId", data.result.omadacId);
+  }
+  
+}

@@ -1,0 +1,23 @@
+meta {
+  name: WLAN Group
+  type: http
+  seq: 5
+}
+
+get {
+  url: https://{{subdomain}}.{{domain}}.{{tld}}/openapi/v1/{{omadacId}}/sites/{{siteId}}/wireless-network/wlans
+  body: none
+  auth: inherit
+}
+
+script:post-response {
+  const wlan = res.body?.result?.[0]?.wlanId;
+  
+  if (wlan) {
+    bru.setEnvVar("wlanGroup", wlan);
+    console.log("✅ WLAN_ID stored:", wlan);
+  } else {
+    console.warn("⚠ No wlanId found in response");
+  }
+  
+}
